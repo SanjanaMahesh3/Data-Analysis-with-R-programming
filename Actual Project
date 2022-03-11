@@ -1,0 +1,55 @@
+R project -DATA ANALYSIS ON COVID PANDEMIC                         (import library ggplot )
+Read the 49.csv File
+demo=read.csv("49.csv")
+demo
+
+Fill the N/A values with Mean
+
+demo[, 4][is.na(demo[, 4])] <- mean(c(demo$cases100k),na.rm=TRUE)
+demo[, 5][is.na(demo[, 5])] <- mean(c(demo$cases7days),na.rm=TRUE)
+demo[, 6][is.na(demo[, 6])] <- mean(c(demo$cases7days100k),na.rm=TRUE)
+demo[, 7][is.na(demo[, 7])] <- mean(c(demo$cases24h),na.rm=TRUE)
+demo[, 8][is.na(demo[, 8])] <- mean(c(demo$deaths),na.rm=TRUE)
+demo[, 9][is.na(demo[, 9])] <- mean(c(demo$deaths100k),na.rm=TRUE)
+demo[, 10][is.na(demo[, 10])] <- mean(c(demo$deaths7days),na.rm=TRUE)
+demo[, 11][is.na(demo[, 11])] <- mean(c(demo$deaths7days100k),na.rm=TRUE)
+demo[, 12][is.na(demo[, 12])] <- mean(c(demo$deaths24h),na.rm=TRUE)
+
+Plot a histogram of cases
+library(ggplot2)
+ggplot(demo, aes(x=cases)) + geom_histogram(binwidth=50000)
+Plot a bar graph of region vs cases 24h
+p<-ggplot(data=demo,aes(x=region,y=cases24h))+geom_bar(stat="identity")
+ p
+
+Find out which country has highest 24h cases,deaths
+z=which.max(demo$cases24h)
+z=which.max(demo$deaths)
+
+Plot comparison pie chart of all country with their deaths
+bp<-ggplot(data=demo,aes(x=name,y=deaths))+geom_bar(width=100,stat="identity")+coord_polar("y")
+
+ count=c(demo$deaths[1:30])
+ pie(count)
+
+
+Add fatality rate column and find out which country has highest fatality rate
+demo["fatality_rate"]=(demo$deaths/demo$cases)*100
+z=which.max(demo$fatality_rate)
+ demo$name[z] p<-ggplot(data=demo,aes(x=name[z],y=fatality_rate[z]))+geom_bar(stat="identity")
+p
+Find the closest value to the mean of number of cases and print its region name
+ x=c(demo$cases)
+yn=mean(demo$cases)
+yn
+z=which(abs(x-yn)==min(abs(x-yn)))
+demo$name[z]
+demo$cases[z]
+
+Add a population column and Find maximum population country name
+demo["population"]=(demo$cases/demo$cases100k)*100000
+z=which.max(demo$population)
+demo$name[z] p<-ggplot(data=demo,aes(x=name[z],y=population[z]))+geom_bar(stat="identity")
+p
+
+
